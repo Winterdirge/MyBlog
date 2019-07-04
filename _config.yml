@@ -2,7 +2,11 @@
 title: YG Blog
 subtitle: 不忘初心，砥砺前行
 SEOTitle: 杨光的博客 | YG Blog
-description: 
+header-img: assets/images/base/home-bg.jpg
+description:
+keyword:
+url: http://wangyupei.com
+baseurl: /blog
 
 # SNS settings
 RSS: false
