@@ -53,7 +53,7 @@ featured-condition-size: 1
 friends: [
   {
     title: YG Blog,
-    href: http://wangyupei.com
+    href: "http://wangyupei.com"
   },
   {
     title: Test1,
