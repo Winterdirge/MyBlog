@@ -6,7 +6,7 @@ header-img: assets/images/base/home-bg.jpg
 description:
 keyword:
 url: http://wangyupei.com
-baseurl: /blog
+baseurl:
 
 # SNS settings
 RSS: false
