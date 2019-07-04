@@ -11,7 +11,7 @@ tags:
     - 翻译
 ---
 
-#Raw strings
+# Raw strings
 相关资料 [SE-0200](https://github.com/apple/swift-evolution/blob/master/proposals/0200-raw-string-escaping.md)
 原始字符串，说白了就是所见即所得，输入的字符串长什么样子，输出的就长什么样子(某些字符串插值的情况先不讨论)
 市面上大部分的编程语言，声明使用字符串的时候用的都是引号`""`，但是当字符串中出现`""`的时候，字符串中的`""`可能被当作该字符串的结束标志，从而导致奇奇怪怪的错误。
@@ -48,7 +48,7 @@ let regex1 = "\\\\[A-Z]+[A-Za-z]+\\.[a-z]+"
 //now
 let regex2 = #"\\[A-Z]+[A-Za-z]+\.[a-z]+"#
 ```
-#A standard Result type
+# A standard Result type
 相关资料 [SE-0235](https://github.com/apple/swift-evolution/blob/master/proposals/0235-add-result.md)
 ```
 public enum Result<Success, Failure> where Failure : Error {
@@ -176,7 +176,8 @@ public func flatMapError<NewFailure>(_ transform: (Failure) -> Result<Success, N
 //此时flatMapResult的类型为Result<Int, FactorError>
 let flatMapResult = result2.flatMap { calculateFactors(for: $0) }
 ```
-#Customizing string interpolation
+# Customizing string interpolation
+
 相关资料[SE-0228](https://github.com/apple/swift-evolution/blob/master/proposals/0228-fix-expressiblebystringinterpolation.md)
 新的可自定义的字符串插值系统，更加的高效灵活，增加了以前版本不可能实现的全新功能，它可以让我们控制对象在字符串中的显示方式。
 ```
@@ -237,6 +238,7 @@ print("List of nums: \(nums, empty: "No one").")
 * 在自定义类型中，需要创建一个`StringInterpolation`的结构体遵循`StringInterpolationProtocol`
 * 实现`appendLiteral`方法，以及实现一个或多个`appendInterpolation`方法
 * 自定义类型需要有两个初始化方法，允许直接从字符串，或字符串插值创建对象
+
 ```
 //copy from Whats-New-In-Swift-5-0
 struct HTMLComponent: ExpressibleByStringLiteral, ExpressibleByStringInterpolation, CustomStringConvertible {
@@ -285,15 +287,18 @@ struct HTMLComponent: ExpressibleByStringLiteral, ExpressibleByStringInterpolati
 let text: HTMLComponent = "You should follow me on Twitter \(twitter: "twostraws"), or you can email me at \(email: "paul@hackingwithswift.com")."
 //You should follow me on Twitter <a href="https://twitter/twostraws">@twostraws</a>, or you can email me at <a href="mailto:paul@hackingwithswift.com">paul@hackingwithswift.com</a>.
 ```
+
 当然，它的玩法还有很多，需要我们慢慢探索。
 
-#Handling future enum cases
+# Handling future enum cases
+
 相关资料 [SE-0192](https://github.com/apple/swift-evolution/blob/master/proposals/0192-non-exhaustive-enums.md)
 处理未来可能改变的枚举类型
 Swift的安全特性需要`switch`语句必须是详尽的完全的，必须涵盖所有的情况，但是将来添加新的case时，例如系统框架改变等，就会导致问题。
 现在我们可以通过新增的`@unknown`属性来处理
 * 对于所有其他case，应该运行此默认case，因为我不想单独处理它们
 * 我想单独处理所有case，但如果将来出现任何case，请使用此选项，而不是导致错误
+
 ```
 enum PasswordError: Error {
     case short
@@ -313,7 +318,8 @@ func showNew(error: PasswordError) {
 }
 //cause warning: Switch must be exhaustive.
 ```
-#Transforming and unwrapping  dictionary values
+# Transforming and unwrapping dictionary values
+
 相关资料[SE-0218](https://github.com/apple/swift-evolution/blob/master/proposals/0218-introduce-compact-map-values.md)
 `Dictionary`增加了`compactMapValues()`方法，该方法将数组中的`compactMap()`（转换我的值，展开结果，放弃空值）与字典的`mapValues()`（保持键不变，转换我的值）结合起来。
 ```
@@ -339,7 +345,8 @@ let people = [
 ]
 let knownAges = people.compactMapValues { $0 }
 ```
-#Checking for integer multiples
+# Checking for integer multiples
+
 相关资料[SE-0225](https://github.com/apple/swift-evolution/blob/master/proposals/0225-binaryinteger-iseven-isodd-ismultiple.md)
 新增`isMultiple(of:)`方法，可是是我们更加清晰方便的判断一个数是不是另一个数的倍数，而不是每次都使用`%`
 ```
@@ -351,7 +358,8 @@ if rowNumber.isMultiple(of: 2) {
     print("Odd")
 }
 ```
-#Flattening nested optionals resulting from try?
+# Flattening nested optionals resulting from try?
+
 相关资料[SE-0230](https://github.com/apple/swift-evolution/blob/master/proposals/0230-flatten-optional-try.md)
 修改了`try?`的工作方式，让嵌套的可选类型变成正常的可选类型，即让多重可选值变成一重，这使得它的工作方式与可选链和条件类型转换相同。
 ```
@@ -377,7 +385,8 @@ let messages = try? user?.getMessages()
 //before swift 5.0: String?? 即Optional(Optional(String))
 //now: String? 即Optional(String)
 ```
-#Dynamically callable types
+# Dynamically callable types
+
 [SE-0216](https://github.com/apple/swift-evolution/blob/master/proposals/0216-dynamic-callable.md)
 增加了`@dynamicCallable`属性，它将类型标记为可直接调用。
 它是语法糖，而不是任何类型的编译器魔法，将方法`random(numberOfZeroes：3)`标记为`@dynamicCallable`之后，可通过下面方式调用
@@ -437,6 +446,5 @@ let result2 = random2(0)
 * 可以为类型添加其他方法和属性，并正常使用它们。
 
 另外，它不支持方法解析，这意味着我们必须直接调用类型（例如random(numberOfZeroes: 5)，而不是调用类型上的特定方法（例如random.generate(numberOfZeroes: 5)
-#THE END
-#Thanks for reading
-#如有不足指出请批评指正
+
+# THE END
