@@ -1,0 +1,70 @@
+# Site settings
+title: YG Blog
+subtitle: 不忘初心，砥砺前行
+SEOTitle: 杨光的博客 | YG Blog
+description: 
+
+# SNS settings
+RSS: false
+weibo_username: yangguanggg
+github_username: winterdirge
+twitter_username: Cofilk
+facebook_username: guang.yang.1253236
+zhihu_username: yang-guang-80-52-68
+
+# Build settings
+highlighter: rouge
+permalink: pretty
+paginate: 10
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+anchorjs: true
+
+# plugin
+plugins: [jekyll-paginate]
+
+# markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# duoshuo settings
+# I do not have one
+duoshuo_username: yangguang
+duoshuo_share: true
+
+# Google Analytics
+ga_track_id: UA-143292095-1
+ga_domain: wangyupei.com
+
+# Sidebar settings
+sidebar: true
+sidebar-about-description: 世界那么大，应该去看看
+sidebar-avatar:   # TODO: need img
+
+# Featured Tags
+featured-tags: true
+featured-condition-size: 1
+
+# Friends
+friends: [
+  {
+    title: YG Blog,
+    href: http://wangyupei.com
+  },
+  {
+    title: Test1,
+    href: '#'
+  },
+  {
+    title: Test2,
+    href: '#'
+  },
+  {
+    title: Test3,
+    href: '#'
+  },
+  {
+    title: Test4,
+    href: '#'
+  }
+]
