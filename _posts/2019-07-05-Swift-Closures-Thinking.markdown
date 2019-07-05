@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Swift Closures随想"
-subtitle:   ""
+subtitle:   "Swift"
 date:       2019-03-08
 author:     "YangGuang"
 header-img: "assets/images/base/post-bg-js-version.jpg"
@@ -43,20 +43,26 @@ OC中block：
 ```objective-c
 //As a local variable:
 returnType (^blockName)(parameterTypes) = ^returnType(parameters) {...};
+
 //As a property:
 @property (nonatomic, copy, nullability) returnType (^blockName)(parameterTypes);
+
 //As a method parameter:
 - (void)someMethodThatTakesABlock:(returnType (^nullability)(parameterTypes))blockName;
+
 //As an argument to a method call:
 [someObject someMethodThatTakesABlock:^returnType (parameters) {...}];
+
 //As a parameter to a C function:
 void SomeFunctionThatTakesABlock(returnType (^blockName)(parameterTypes));
+
 //As a typedef:
 typedef returnType (^TypeName)(parameterTypes);
 TypeName blockName = ^returnType(parameters) {...};
 ```
 
 Swift Closures：
+
 ```Swift
 //As a variable:
 var closureName: (ParameterTypes) -> ReturnType
@@ -68,8 +74,8 @@ typealias ClosureType = (ParameterTypes) -> ReturnType
 let closureName: ClosureType = { ... }
 //As a parameter to another function:
 funcName(parameter: (ParameterTypes) -> ReturnType)
-//Note: if the passed-in closure is going to outlive the scope of the method, e.g. if you are saving it to a property, it needs to be annotated with @escaping.
-
+//Note: if the passed-in closure is going to outlive the scope of the method, 
+//e.g. if you are saving it to a property, it needs to be annotated with @escaping.
 //As an argument to a function call:
 funcName({ (ParameterTypes) -> ReturnType in statements })
 //As a function parameter:
@@ -91,6 +97,7 @@ array.sorted(by: { [unowned self] (item1: Int, item2: Int) -> Bool in return ite
 //As a function parameter with explicit capture semantics and inferred parameters / return type:
 array.sorted(by: { [unowned self] in return $0 < $1 })
 ```
+
 OC Block和Swift Closures之间的语法差别从上面可以清晰的看出了，在这里就不总结了。
 
 # 下面说一说我认为比较有意思的东西
