@@ -8,7 +8,6 @@ header-img: "assets/images/base/post-bg-js-version.jpg"
 tags:
     - 移动端开发
     - iOS
-    - 翻译
 ---
 
 # Raw strings
