@@ -10,11 +10,11 @@ baseurl:
 
 # SNS settings
 RSS: false
-weibo_username: yangguangg
+# weibo_username: yangguangg
 github_username: winterdirge
-twitter_username: Cofilk
-facebook_username: guang.yang.1253236
-zhihu_username: yang-guang-80-52-68
+# twitter_username: Cofilk
+# facebook_username: guang.yang.1253236
+# zhihu_username: yang-guang-80-52-68
 
 # Build settings
 highlighter: rouge
