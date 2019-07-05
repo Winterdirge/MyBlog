@@ -21,11 +21,11 @@ let rain = #"The "rain" in "Spain" falls mainly on the Spaniards."#
 ```
 可以看到，无论字符串中有多少`""`都可以很好识别
 有的人可能要问了，要是字符串中有`"#`符号呢？注意了，我们前面说的是`一个或多个`，没错，这时候我们需要做的只需要增加`#`的数量的就行了，不过开头和结尾的`#`数量要保持一致
-```
+```swift
 let str = ##"My dog said "woof"#gooddog"##
 ```
 那我们的字符串插值怎么办？加上一个`#`即可
-```
+```swift
 let answer = 42
 //before
 let dontpanic = "The answer is \(answer)."
@@ -33,7 +33,7 @@ let dontpanic = "The answer is \(answer)."
 let dontpanic = #"The answer is \#(answer)."#
 ```
 同样的Raw strings也支持Swift的多行字符串
-```
+```swift
 let multiline = #"""
 The answer to life,
 the universe,
@@ -41,7 +41,7 @@ and everything is \#(answer).
 """#
 ```
 有了Raw string我们就可以写一些比较复杂的字符串了，特别是某些正则表达式，因为正则表达式中总是包含很多`\`
-```
+```swift
 //before
 let regex1 = "\\\\[A-Z]+[A-Za-z]+\\.[a-z]+"
 //now
@@ -49,7 +49,7 @@ let regex2 = #"\\[A-Z]+[A-Za-z]+\.[a-z]+"#
 ```
 # A standard Result type
 相关资料 [SE-0235](https://github.com/apple/swift-evolution/blob/master/proposals/0235-add-result.md)
-```
+```swift
 public enum Result<Success, Failure> where Failure : Error {
     case success(Success)
     case failure(Failure)
@@ -63,7 +63,7 @@ public enum Result<Success, Failure> where Failure : Error {
 ```
 最初见到这个类型是在Kingfisher开源库中，第一次看到时感觉也没什么，不就是新定义了一个Result枚举，然后把success和failure包装了起来，后来细细研究了一下，发现事情并没有那么简单。
 Result提供了一个通用的范型，基本可以囊括所有的成功和失败类型。也就是说，它对外提供了一个统一的结果类型，用来处理返回结果。
-```
+```swift
 //eg
 enum NetworkError: Error {
     case badURL
@@ -90,7 +90,7 @@ fetchUnreadCount1(from: "https://www.hackingwithswift.com") { result in
 }
 ```
 Result提供了`get`方法，它会返回成功的结果，或者抛出错误结果。
-```
+```swift
 //get方法
 public func get() throws -> Success {
     switch self {
@@ -107,7 +107,7 @@ fetchUnreadCount1(from: "https://www.hackingwithswift.com") { result in
 }
 ```
 另外，还提供了一种使用会抛出错误的closure来初始化Result类型的方法，该closure执行后，成功的结果会被存储在`.success`中，抛出的错误会被存储在`.failure`
-```
+```swift
 public init(catching body: () throws -> Success) {
     do {
         self = .success(try body())
@@ -119,7 +119,7 @@ public init(catching body: () throws -> Success) {
 let result = Result { try String(contentsOfFile: someFile) }
 ```
 其次，如果定义的错误类型不满足需求的话，Result还提供了对结果的转换方法，`map(), flatMap(), mapError(), flatMapError()`
-```
+```swift
 enum FactorError: Error {
     case belowMinimum
     case isPrime
@@ -140,7 +140,7 @@ let result1 = generateRandomNumber(maximum: 11)
 let stringNumber = result1.map { "The random number is: \($0)." }
 ```
 另一种情况是将上个结果的返回值转换为另一个结果
-```
+```swift
 func calculateFactors(for number: Int) -> Result<Int, FactorError> {
     let factors = (1...number).filter { number % $0 == 0 }
 
@@ -155,7 +155,7 @@ let result2 = generateRandomNumber(maximum: 10)
 let mapResult = result2.map { calculateFactors(for: $0) }
 ```
 细心的朋友们可能会发现，我们将.success转换为另一个Result，也就是说mapResult的类型是`Result<Result<Int, Factor>, Factor>`，而不是`Result<Int, Factor>`，那如果结果需要转换很多次呢？那岂不是要嵌套很多层？没错，很多朋友可能已经想到了，那就是Swift中的`flatMap`方法，Result也对其进行了实现
-```
+```swift
 public func flatMap<NewSuccess>(_ transform: (Success) -> Result<NewSuccess, Failure>) -> Result<NewSuccess, Failure> {
     switch self {
     case let .success(success):
@@ -179,7 +179,7 @@ let flatMapResult = result2.flatMap { calculateFactors(for: $0) }
 
 相关资料[SE-0228](https://github.com/apple/swift-evolution/blob/master/proposals/0228-fix-expressiblebystringinterpolation.md)
 新的可自定义的字符串插值系统，更加的高效灵活，增加了以前版本不可能实现的全新功能，它可以让我们控制对象在字符串中的显示方式。
-```
+```swift
 //eg
 struct User {
     var name: String
@@ -197,7 +197,7 @@ print("User details: \(user)")
 ```
 有人可能会说，直接实现`CustomStringConvertible`不就行了，非得这么复杂，不仅需要扩展`String.StringInterpolation`，还需要实现`appendInterpolation`方法。没错，对于简单的插值来说，重写一下`description`就行。
 下面就来看一下，新的插值的全新特性。只要你开心，你可以自定义有很多个参数的插值方法。
-```
+```swift
 extensionn String.StringInterpolation {
     mutating func appendInterpolation(_ number: Int, style: NumberFormatter.Style) {
         let formatter = NumberFormatter()
@@ -238,7 +238,7 @@ print("List of nums: \(nums, empty: "No one").")
 * 实现`appendLiteral`方法，以及实现一个或多个`appendInterpolation`方法
 * 自定义类型需要有两个初始化方法，允许直接从字符串，或字符串插值创建对象
 
-```
+```swift
 //copy from Whats-New-In-Swift-5-0
 struct HTMLComponent: ExpressibleByStringLiteral, ExpressibleByStringInterpolation, CustomStringConvertible {
     struct StringInterpolation: StringInterpolationProtocol {
@@ -298,7 +298,7 @@ Swift的安全特性需要`switch`语句必须是详尽的完全的，必须涵�
 * 对于所有其他case，应该运行此默认case，因为我不想单独处理它们
 * 我想单独处理所有case，但如果将来出现任何case，请使用此选项，而不是导致错误
 
-```
+```swift
 enum PasswordError: Error {
     case short
     case obvious
@@ -321,7 +321,7 @@ func showNew(error: PasswordError) {
 
 相关资料[SE-0218](https://github.com/apple/swift-evolution/blob/master/proposals/0218-introduce-compact-map-values.md)
 `Dictionary`增加了`compactMapValues()`方法，该方法将数组中的`compactMap()`（转换我的值，展开结果，放弃空值）与字典的`mapValues()`（保持键不变，转换我的值）结合起来。
-```
+```swift
 //eg
 //返回value是Int的新字典
 let times = [
@@ -335,7 +335,7 @@ let finishers1 = times.compactMapValues { Int($0) }
 let finishers2 = times.compactMapValues { Init.init }
 ```
 或者可以使用该方法拆包可选值，过滤`nil`值，而不用做任何的类型转换。
-```
+```swift
 let people = [
     "Paul": 38,
     "Sophie": 8,
@@ -348,7 +348,7 @@ let knownAges = people.compactMapValues { $0 }
 
 相关资料[SE-0225](https://github.com/apple/swift-evolution/blob/master/proposals/0225-binaryinteger-iseven-isodd-ismultiple.md)
 新增`isMultiple(of:)`方法，可是是我们更加清晰方便的判断一个数是不是另一个数的倍数，而不是每次都使用`%`
-```
+```swift
 //判断偶数
 let rowNumber = 4
 if rowNumber.isMultiple(of: 2) {
@@ -361,7 +361,7 @@ if rowNumber.isMultiple(of: 2) {
 
 相关资料[SE-0230](https://github.com/apple/swift-evolution/blob/master/proposals/0230-flatten-optional-try.md)
 修改了`try?`的工作方式，让嵌套的可选类型变成正常的可选类型，即让多重可选值变成一重，这使得它的工作方式与可选链和条件类型转换相同。
-```
+```swift
 struct User {
     var id: Int
 
@@ -392,7 +392,7 @@ let messages = try? user?.getMessages()
 `random.dynamicallyCall(withKeywordArguments：["numberOfZeroes"：3])`。
 `@dynamicCallable`是Swift 4.2的`@dynamicMemberLookup`的扩展，为了使Swift代码更容易与Python和JavaScript等动态语言一起工作。
 要将此功能添加到您自己的类型，需要添加`@dynamicCallable`属性并实现下面方法
-```
+```swift
 func dynamicCall(withArguments args: [Int]) -> Double
 func dynamicCall(withKeywordArguments args: KeyValuePairs <String，Int>) -> Double 
 ```
@@ -404,7 +404,7 @@ func dynamicCall(withKeywordArguments args: KeyValuePairs <String，Int>) -> Dou
 
 我们来看一个例子。这是一个生成介于0和某个最大值之间数字的结构，具体取决于传入的输入：
 
-```
+```swift
 import Foundation
 
 @dynamicCallable
@@ -419,12 +419,12 @@ struct RandomNumberGenerator1 {
 可以使用任意数量的参数调用该方法，或者为零，因此读取第一个值并为其设置默认值。
 
 我们现在可以创建一个RandomNumberGenerator1实例并像函数一样调用：
-```
+```swift
 let random1 = RandomNumberGenerator1()
 let result1 = random1(numberOfZeroes: 0)
 ```
 或者
-```
+```swift
 @dynamicCallable
 struct RandomNumberGenerator2 {
     func dynamicallyCall(withArguments args: [Int]) -> Double {
