@@ -33,8 +33,8 @@ kramdown:
 
 # duoshuo settings
 # I do not have one
-duoshuo_username: yangguang
-duoshuo_share: true
+duoshuo_username:
+duoshuo_share: false
 
 # Google Analytics
 ga_track_id: UA-143292095-1
@@ -52,23 +52,7 @@ featured-condition-size: 1
 # Friends
 friends: [
   {
-    title: YG Blog,
+    title: ME,
     href: "http://wangyupei.com"
-  },
-  {
-    title: Test1,
-    href: '#'
-  },
-  {
-    title: Test2,
-    href: '#'
-  },
-  {
-    title: Test3,
-    href: '#'
-  },
-  {
-    title: Test4,
-    href: '#'
   }
 ]
