@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Swift Initialization"
-subtitle:   "Swift"
+subtitle:   "Swift初始化方法"
 date:       2019-03-13
 author:     "YangGuang"
 header-img: "assets/images/base/post-bg-js-version.jpg"
@@ -688,4 +688,4 @@ class SomeClass {
 
 >请注意，闭包的结束大括号后面是一对空括号。 这告诉Swift立即执行闭包。 如果省略这些括号，则尝试将闭包本身分配给属性，而不是闭包的返回值。如果使用闭包来初始化属性，请记住在执行闭包时尚未初始化实例的其余部分。 这意味着您无法从闭包中访问任何其他属性值，即使这些属性具有默认值。 您也不能使用隐式self属性，也不能调用任何实例的方法。
 
-#THE END
+# THE END
