@@ -252,9 +252,10 @@ convenience init(parameters) {
 **便捷初始化方法必须横向委派（当前类）**
 
 官方有几幅图画的很好，大家可以随便看看：
-![initializerDelegation01](https://upload-images.jianshu.io/upload_images/3518939-2f1730aab5dcc5c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-![initializerDelegation02](https://upload-images.jianshu.io/upload_images/3518939-9e294a654c50f03a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](/assets/images/2019/initializerDelegation01.png)
+
+![](/assets/images/2019/initializerDelegation02.png)
 
 #### Two-Phase Initialization
 
@@ -283,8 +284,10 @@ Swift编译器通过四步安全检查来保证两阶段初始化正常完成。
 **Phase 2**
 - 从继承链的顶端开始，每一个指定初始化方法都有机会去深层次的自定义实例，这时候初始化方法以及可以访问`self`，可以改变`self`的属性，调用`self`的实例方法。（`说白了就是只要初始化完了类的所有属性，该实例就已经初始化完成了，你就可以调用self的属性和方法了`）
 - 最终，便捷初始化方法可以去自定义实例，使用`self`。（`和上面对应起来，便捷初始化方法必须先要调用其他初始化方法，然后才能对属性进行操作`）
-![twoPhaseInitialization01](https://upload-images.jianshu.io/upload_images/3518939-a79494be7d42e0bf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-![twoPhaseInitialization02](https://upload-images.jianshu.io/upload_images/3518939-28c1f9d5175375ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+![](/assets/images/2019/twoPhaseInitialization01.png)
+
+![](/assets/images/2019/twoPhaseInitialization02.png)
 
 #### Initializer Inheritance and Overriding
 
@@ -347,6 +350,7 @@ print("Hoverboard: \(hoverboard.description)")
 
 >NOTE
 子类可以改变从父类继承的变量，但是无法修改继承而来的常量。
+
 #### Automatic Initializer Inheritance
 
 子类默认不会继承父类的初始化方法，但是特定条件下，父类的初始化方法会被自动继承。
@@ -382,7 +386,8 @@ let mysteryMeat = Food()
 // mysteryMeat's name is "[Unnamed]"
 ```
 
-![initializersExample01](https://upload-images.jianshu.io/upload_images/3518939-adc7f4d770eefd93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![initializersExample01](/assets/images/2019/initializersExample01.png)
+
 类没有默认的成员初始化方法，所以需要提供一个指定初始化方法。Food类没有父类，所有初始化自身属性以后无需在调用super.init()
 
 ```swift
@@ -406,7 +411,8 @@ let sixEggs = RecipeIngredient(name: "Eggs", quantity: 6)
 //name: "Eggs" quantity: 9
 ```
 
-![initializersExample02](https://upload-images.jianshu.io/upload_images/3518939-ae8bfaca1b15368d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![initializersExample02](/assets/images/2019/initializersExample02.png)
+
 尽管RecipeInngredient提供了init(name: String)便捷初始化方法，但是相当于提供了父类指定初始化方法的实现，因此RecipeIngredient自动继承父类的所有便捷初始化方法。
 RecipeIngredient继承Food的`convenience init()`，但是调用该方法时的`init
 (name:)`，它会委派到自己`override`的`init(name:)`方法
@@ -439,7 +445,8 @@ for item in breakfastList {
 >NOTE
 ShoppingListItem没有定义初始化方法为purchased提供初始值，因为购物清单上的item开始是总是未购买状态。因为未定义任何初始化方法，它将从父类继承所有的指定和便捷初始化方法。
 
-![initializersExample03](https://upload-images.jianshu.io/upload_images/3518939-45a26e8ff183460d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![initializersExample03](/assets/images/2019/initializersExample03.png)
+
 
 # Failable Initializers
 
