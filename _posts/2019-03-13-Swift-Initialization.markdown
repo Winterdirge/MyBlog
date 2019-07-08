@@ -5,6 +5,7 @@ subtitle:   "Swift初始化方法"
 date:       2019-03-13
 author:     "YangGuang"
 header-style: text
+catalog: true
 tags:
     - Swift
 ---
@@ -63,7 +64,7 @@ struct A {
 和函数和方法参数一样，初始化方法的参数可以有用于initalizer's body的参数名，以及被调用时的参数标签。
 然而，初始化方法没有一个可辨别的方法名（`函数可以通过不同的函数名来判断，初始化方法都是init`），所以初始化方法中参数的名字和类型对判断需要调用哪个方法起着至关重要的作用，因此如果我们不提供参数标签，Swift会为初始化程序中的每个参数提供自动参数标签（`此处标签名与参数名相同`）。
 
-```Swift
+```swift
 struct Color {
     let red, green, blue: Double
     init(red: Double, green: Double, blue: Double) {
