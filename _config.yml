@@ -4,14 +4,17 @@ subtitle: 不忘初心，砥砺前行
 SEOTitle: 杨光的博客 | YG Blog
 header-img: assets/images/base/home-bg.jpg
 description: 到不了的地方叫远方，回不去的地方叫故乡，有多少人就这样，一直在路上
-keyword:
+keyword: "杨光, Yangguang, YGBlog"
 url: https://wangyupei.com
 baseurl:
 
+# publish posts or collection documents with a future date
+future: true
+
 # SNS settings
 RSS: false
-# weibo_username: yangguangg
 github_username: winterdirge
+# weibo_username: yangguangg
 # twitter_username: Cofilk
 # facebook_username: guang.yang.1253236
 # zhihu_username: yang-guang-80-52-68
@@ -20,7 +23,7 @@ github_username: winterdirge
 highlighter: rouge
 permalink: pretty
 paginate: 10
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md", "README.zh.md"]
 anchorjs: true
 
 # plugin
@@ -31,10 +34,9 @@ markdown: kramdown
 kramdown:
   input: GFM
 
-# duoshuo settings
-# I do not have one
-duoshuo_username:
-duoshuo_share: false
+
+#  disqus settings
+disqus_username: yangguang
 
 # Google Analytics
 ga_track_id: UA-143292095-1
@@ -42,17 +44,24 @@ ga_domain: wangyupei.com
 
 # Sidebar settings
 sidebar: true
-sidebar-about-description: 世界那么大，应该去看看
-sidebar-avatar:   # TODO: need img
+sidebar-about-description: 为了美好的明天，我一直在努力
+sidebar-avatar:  /assets/images/base/avatar.jpeg
 
 # Featured Tags
 featured-tags: true
 featured-condition-size: 1
 
+# Progressive web apps
+chrome-tab-theme-color: "#000000"
+service-worker: true
+
+# MathJax rendering for layout:page(e.g. post preview)
+page-mathjax: false
+
 # Friends
 friends: [
   {
-    title: ME,
+    title: 杨光的博客,
     href: "http://wangyupei.com"
   }
 ]
