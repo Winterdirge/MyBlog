@@ -4,7 +4,7 @@ title:      "Swift Closures随想"
 subtitle:   "Swift闭包"
 date:       2019-03-08
 author:     "YangGuang"
-header-img: ""
+header-style: text
 tags:
     - Swift
 ---

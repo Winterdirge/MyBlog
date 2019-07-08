@@ -4,8 +4,7 @@ title:      "Swift Initialization"
 subtitle:   "Swift初始化方法"
 date:       2019-03-13
 author:     "YangGuang"
-header-img: ""
-catalog: false
+header-style: text
 tags:
     - Swift
 ---

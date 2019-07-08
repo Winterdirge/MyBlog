@@ -4,7 +4,7 @@ title:      "扬帆，起航（一）"
 subtitle:   "YG的博客搭建之旅"
 date:       2019-07-06
 author:     "YangGuang"
-header-img: ""
+header-style: text
 tags:
     - Jekyll
 ---
