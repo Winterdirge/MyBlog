@@ -4,7 +4,7 @@ title:      "Swift 5.0 新特性"
 subtitle:   "Swift 5.0 新特性"
 date:       2019-03-28
 author:     "YangGuang"
-header-img: "assets/images/base/post-bg-js-version.jpg"
+header-img: ""
 tags:
     - 移动端开发
     - iOS
