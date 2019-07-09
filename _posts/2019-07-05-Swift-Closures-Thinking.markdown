@@ -40,7 +40,7 @@ Closures的使用时机需要具体问题具体分析，这就需要有比较丰
 
 OC中block：
 
-```objective-c
+```objectivec
 //As a local variable:
 returnType (^blockName)(parameterTypes) = ^returnType(parameters) {...};
 
