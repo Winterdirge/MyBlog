@@ -2,7 +2,7 @@
 layout:     post
 title:      "Swift Closures随想"
 subtitle:   "Swift闭包"
-date:       2019-03-08
+date:       2019-03-08 15:27:24 GMT+8
 author:     "YangGuang"
 header-style: text
 tags:

@@ -2,7 +2,7 @@
 layout:     post
 title:      "Swift Initialization"
 subtitle:   "Swift初始化方法"
-date:       2019-03-13
+date:       2019-03-13 18:28:21 GMT+8
 author:     "YangGuang"
 header-style: text
 catalog: true
