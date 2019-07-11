@@ -49,6 +49,9 @@ disqus_username: yangguang
 ga_track_id: UA-143292095-1
 ga_domain: wangyupei.com
 
+# Baidu Analytics
+enable_baidu_analytics: true
+
 # Sidebar settings
 sidebar: true
 sidebar-about-description: 为了美好的明天，我一直在努力
