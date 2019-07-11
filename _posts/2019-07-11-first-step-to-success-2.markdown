@@ -65,7 +65,60 @@ nginx -s reload
 # 最终效果
 到目前为止，你的博客已经可以对外访问了，赶快输入你的域名去看看你自己的博客吧。当然，博客的搭建过程还是比较简单的，难得是你用什么内容来充实你的博客，是技术，是情感，还是艺术，这都由你自己来书写。
 
-# 自动部署以及HTTPS
+# 自动部署
 是不是觉得每次更新都要build一下，然后在scp到服务器很麻烦，有没有什么方法可以在写完代码以后让服务器帮你自动构建，答案是有的。
 
-# To be continued.
+笔者是直接把博客相关代码全都提交到服务器，设置Git post-receive钩子，每次提交代码的时候都会执行一遍部署脚本，来达到自动部署的目的。
+
+在服务器创建Git仓库
+```
+mkdir blog.git
+cd blog.git
+git init --bare
+```
+设置`post-receive`脚本，找到`blog.git/hooks`文件加下的`post-receive.sample`文件，cp一份改名为`post-receive`，如果没有此文件，就直接创建，之后添加如下内容，具体的目录需要读者自己修改
+```shell
+#!/bin/sh
+GIT_REPO=/home/myname/www/blog.git
+TMP_GIT_CLONE=/home/myname/tmp/blog
+PUBLIC_WWW=/home/myname/www/blog
+
+git clone $GIT_REPO $TMP_GIT_CLONE
+jekyll build -s $TMP_GIT_CLONE -d $PUBLIC_WWW
+rm -rf $TMP_GIT_CLONE
+exit
+```
+然后赋予改脚本执行权限
+```
+chmod +x post-receive
+```
+至此自动部署脚本已完成，提交代码即可观察效果。
+
+# HTTPS
+由于在阿里云可以申请免费的ssl证书，那为什么不把自己的博客搞成https的呢，于是笔者说干就干，申请流程在此不再赘述。此步骤假设你已经拿到证书的`.pem`和`.key`，我们需要做的就是上传这两个文件到服务器，然后修改nginx的配置文件。
+
+找到之前修改80端口的地方，修改为下面内容
+```
+server {
+    listen       80 default_server;
+    listen       [::]:80 default_server;
+    return 301 https://your_domain_name$request_uri;
+}
+```
+找到443端口，修改ssl_certificate字段以及ssl_certificate_key字段，分为为`.pem`和`.key`文件在服务器上的地址，其他配置按需修改。
+
+```
+server {
+    listen       443 ssl http2 default_server;
+    listen       [::]:443 ssl http2 default_server;
+    server_name  your_domain_name;
+    root         /home/yourname/www/blog;
+
+    ssl_certificate "/etc/pki/nginx/xxxx.pem";
+    ssl_certificate_key "/etc/pki/nginx/xxxx.key";
+    //省略部分代码
+}
+```
+至此HTTPS已经设置完成，愉快的开始你的博客之旅吧。
+
+于2019.7.11 11:59:40 理想国际大厦
