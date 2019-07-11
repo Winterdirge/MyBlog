@@ -9,6 +9,7 @@ tags:
     - Swift
     - iOS
     - 移动端
+    - 技术
 ---
 
 >本文不会对Closures的基本语法进行解读，如果对于Closures语法有所疑惑，请参考[Apple官方文档](https://docs.swift.org/swift-book/LanguageGuide/Closures.html)

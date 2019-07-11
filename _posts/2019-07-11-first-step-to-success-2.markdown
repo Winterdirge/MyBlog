@@ -8,6 +8,7 @@ header-style: text
 tags:
     - Jekyll
     - 博客搭建
+    - 技术
 ---
 
 # 回顾
