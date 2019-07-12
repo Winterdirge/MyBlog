@@ -33,7 +33,7 @@ tags:
 server {
     listen       80 default_server;
     listen       [::]:80 default_server;
-    server_name  _;            
+    server_name  your_domain_name;            
     root         /home/xxx;
 
     //此处省略代码若干
@@ -72,7 +72,7 @@ nginx -s reload
 笔者是直接把博客相关代码全都提交到服务器，设置Git post-receive钩子，每次提交代码的时候都会执行一遍部署脚本，来达到自动部署的目的。
 
 在服务器创建Git仓库
-```
+```shell
 mkdir blog.git
 cd blog.git
 git init --bare
@@ -90,7 +90,7 @@ rm -rf $TMP_GIT_CLONE
 exit
 ```
 然后赋予改脚本执行权限
-```
+```shell
 chmod +x post-receive
 ```
 至此自动部署脚本已完成，提交代码即可观察效果。
