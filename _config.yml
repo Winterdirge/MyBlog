@@ -12,7 +12,7 @@ baseurl:
 future: true
 
 # SNS settings
-RSS: false
+RSS: true
 github_username: winterdirge
 weibo_username: yangguangg
 twitter_username: Cofilk
