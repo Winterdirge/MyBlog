@@ -38,7 +38,7 @@ init() {}
 
 ```swift
 struct A {
-	var a = 1
+    var a = 1
 }
 //这种情况下会生成两个默认初始化方法，分别是init()和init(a: Int)
 //如果是类的话只会生成一个默认的初始化方法init()
