@@ -57,13 +57,13 @@ tags:
 
 Jekyll是基于Ruby开发的，所以想要运行Jekyll首先要有Ruby环境。MacOS系统会自带Ruby，不过Ruby版本较低，Jekyll官网上说Ruby版本需要2.4.0及以上，所以笔者需要安装高版本的Ruby（注意：此处不要试图去更新系统自带的ruby，因为系统的某些软件可能是基于系统的Ruby运行，更新以后那些软件可能无法正常运行）。笔者在Mac下通过Homebrew进行安装，命令如下
 
-```
+```bash
 brew install ruby
 ```
 
 如果没有Homebrew，可以现通过如下命令安装
 
-```
+```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
@@ -76,7 +76,7 @@ brew install ruby
 
 可以看到系统并不会去搜索你新安装的ruby位置，所以需要将路径加入`$PATH`。笔者这里采用的方法是修改`~/.zshrc`文件（笔者用的是zsh，使用bash的用户，修改方法相同），在文件末尾添加如下命令：
 
-```
+```bash
 export PATH="/usr/local/opt/ruby/bin:$PATH"
 ```
 
@@ -91,7 +91,7 @@ ruby 2.6.3p62 (2019-04-16 revision 67580) [x86_64-darwin18]
 
 安装好Ruby之后，安装Jekyll就比较简单了，一句好搞定。
 
-```
+```bash
 gem install jekyll
 ```
 安装完成以后运行`jekyll`，可能会出现如下错误：
@@ -102,13 +102,13 @@ zsh: command not found: jekyll
 
 这个问题和上个问题出现的原因相同，还是因为系统找不到此命令，解决方法和前面一样，将路径添加到`$PATH`。这里笔者采用另外一种方法，将jekyll放到系统可以找到的路径即可。
 
-```
+```bash
 ln -s /usr/local/lib/ruby/gems/2.6.0/bin/jekyll /usr/local/bin/jekyll
 ```
 
 这个命令是将jekyll链接到`/usr/local/bin`中，由于系统会搜索此路径，然后就可以通过该链接找到jekyll真正位置，再次运行
 
-```
+```bash
 jekyll -v
 //output: jekyll 3.8.6
 ```
@@ -129,13 +129,13 @@ jekyll -v
 此处笔者也是参考的[rvm官方网站](http://www.rvm.io)
 
 1.安装GPG keys:
-```
+```bash
 gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 ```
 
 2.安装RVM
 
-```
+```bash
 curl -sSL https://get.rvm.io | bash -s stable
 ```
 
@@ -143,13 +143,13 @@ curl -sSL https://get.rvm.io | bash -s stable
 
 只需要知道你想要安装的版本号就行，下面的命令就是安装2.3.0版本的ruby
 
-```
+```bash
 rvm install 2.3.0
 ```
 
 安装完成之后需要指定新安装的版本为默认版本
 
-```
+```bash
 rvm use 2.3.0
 ```
 
@@ -164,7 +164,7 @@ rvm use 2.3.0
 
 简单举个例子
 
-```
+```bash
 cd ~
 jekyll new myblog
 cd myblog
