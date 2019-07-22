@@ -3,7 +3,7 @@ layout:     post
 title:      生日快乐
 subtitle:   一个关于生日与泡面的故事
 date:       2019-07-14 23:30:18 GMT+8
-author:     "YangGuang"
+author:     "Yang Guang"
 header-style: text
 tags:
     - 情感的天空

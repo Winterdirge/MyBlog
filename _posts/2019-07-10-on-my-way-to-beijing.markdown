@@ -3,7 +3,7 @@ layout:     post
 title:      "808狂想曲"
 subtitle:   "G808回京之旅"
 date:       2019-07-10 20:16:23 GMT+8
-author:     "YangGuang"
+author:     "Yang Guang"
 header-style: text
 tags:
     - 情感的天空

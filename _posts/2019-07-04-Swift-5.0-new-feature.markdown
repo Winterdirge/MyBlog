@@ -3,7 +3,7 @@ layout:     post
 title:      "Swift 5.0 新特性"
 subtitle:   "Swift 5.0 新特性"
 date:       2019-03-28 23:44:24 GMT+8
-author:     "YangGuang"
+author:     "Yang Guang"
 header-style: text
 tags:
     - 移动端

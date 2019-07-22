@@ -3,7 +3,7 @@ layout:     post
 title:      "扬帆，起航（一）"
 subtitle:   "YG的博客搭建之旅"
 date:       2019-07-06 11:50:24 GMT+8
-author:     "YangGuang"
+author:     "Yang Guang"
 header-style: text
 tags:
     - Jekyll
