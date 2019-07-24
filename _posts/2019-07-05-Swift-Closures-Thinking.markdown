@@ -18,20 +18,20 @@ tags:
 
 *In programming languages, closures (also called lexical closures or function closures) are techniques for implementing lexically scoped named binding in languages with first-class functions. Operationally, a closure is a record storing a function together with an environment: a mapping associating each free variable of the function (variables that are used locally, but defined in an enclosing scope) with the value or reference to which the name was bound when the closure was created. — [Wikipedia](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29#Notes)*
 
-# 是啥
+### 是啥
 
 官方文档给出这样一句话：*Closures are self-contained blocks of functionality that can be passed around and used in your code. Closures in Swift are similar to blocks in C and Objective-C and to lambdas in other programming languages.*
 大意就是：*闭包是一个独立的功能块，可以在代码中传递和使用。 Swift中的闭包类似于C和Objective-C中的block以及其他编程语言中的lambdas。*
 说白了和函数比较类似，对它们的调用本质上都是执行了一段代码，它们都可以有参数，都可以有返回值，只是表现的方式不同。Closures有它自己的特色。
 
-# 为啥要用
+### 为啥要用
 
 说白了，用Closures就是为了方便、简洁、优雅。
 其实Closures并没有赋予我们额外的能力，可以用Closures实现的功能，也可以用其他方法来实现。不过Closures确实可以使代码更加的清晰、紧凑以及可读，众所周知，清晰明了的代码会包含更少的bug，测试起来也更加方便。
 Closures只是一种让函数访问本地状态、变量等更加方便的途径而已。
 我们不必创建一个可以使用局部变量的类，而只需在现场定义函数，它就可以隐式访问当前可见的每个变量。使用传统OOP语言定义成员方法时，从某种意义上来说，这些成员方法就相当于闭包，因为它们可以访问“此类中可见的所有成员”。
 
-# 啥时候用
+### 啥时候用
 
 在具体的项目中，Closures主要用于回调以及代理中。
 例如，让你设计一个网络请求的类，你如何把请求的结果返回给调用者？因为网络请求是一个异步的过程，你不能直接通过函数的返回值直接传递结果，用户也不可能一直等着函数返回，那么该怎么办呢？
@@ -39,7 +39,7 @@ Closures只是一种让函数访问本地状态、变量等更加方便的途径
 另一种方法就是使用Closures。既然我们不知道网络请求何时返回结果，但是我们知道请求返回时我们要做什么，也就是说网络请求结束后我们一定会进行这些操作，那么我们有没有什么办法直接告诉被调方，在你请求网络结束后，进行我需要的操作。说白了就是你跑完你的代码以后，能不能接着跑我的代码，这个问题的关键在于怎么能让对方知道我要让它跑什么代码，怎么能让它知道呢？当然是直接告诉它啊，也就是直接把你想执行的代码告诉它，这种‘告诉’可以通过参数传递过去。什么？把要执行的方法传过去？没错，就是直接传过去，在C语言中我们可以直接传递一个函数指针，OC中可以使用selector或者block，Swift理所当然就是用Closures了。什么？你没听懂？没关系，时间久了，用的多了自然而然就差不多了。
 Closures的使用时机需要具体问题具体分析，这就需要有比较丰富经验，不能单纯为了使用而使用，有时候过多的使用Closures会使代码更加难懂，比如说Closures嵌套Closures的情况。
 
-# 怎么用
+### 怎么用
 
 OC中block：
 
@@ -117,7 +117,7 @@ array.sorted(by: { [unowned self] in return $0 < $1 })
 
 OC Block和Swift Closures之间的语法差别从上面可以清晰的看出了，在这里就不总结了。
 
-# 下面说一说我认为比较有意思的东西
+### 下面说一说我认为比较有意思的东西
 
 对于调用方，Closures中的参数是被调方传递给你的，如果被调方传给你的参数还是Closures，那么这个Closures其实已经是被调方实现好了的，只需要你传递Closures所需的参数即可。下面通过例子简单看一下
 ```swift
@@ -179,6 +179,6 @@ testClosure3 { closure in
 
 3重closure，这是就需要调用方传入closure1的具体实现，被调方在此基础上传入参数实现closure2，最后再将这个closure2当作参数传递出去，日常开发中反正我是没用过，如果大家发现有这么用的那么请告诉我，让我也一起学习下。至于更多重的closures，请大家自行脑补吧。
 
-# To Be Continued
+### The End
 
 说白了不论是Closure还是其他的语言特性，都是为了更好的与机器交流而已，编程语言使我们可以与机器交流，像中文英文可以让我们相互交流而已。而在编程语言的特性，就好比某些网络通用语或者谚语，往往可以使用很简短的几句代码或几句话，实现很复杂的功能。这也是编程语言发展的一个趋势。
