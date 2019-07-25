@@ -10,4 +10,9 @@ iOS8之后的新API
 图像处理相关RGBA BGRA 四元数
 音视频处理
 机器学习
+iOS触摸事件响应链
 # To be continued
+
+UIView添加UIPanGestureRecognizer、UICollectionView
+UICollectionView可以滑动时，UIView接收不到UIPanGestureRecognizer
+不可以滑动时UIView可以接收到UIPanGestureRecognizer
