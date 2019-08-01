@@ -18,3 +18,5 @@ UICollectionView可以滑动时，UIView接收不到UIPanGestureRecognizer
 不可以滑动时UIView可以接收到UIPanGestureRecognizer
 
 Xcode build settings相关设置，编译链接相关
+
+iOS内存泄漏：UIAlertView，UIImagePickerController，UIWebView
