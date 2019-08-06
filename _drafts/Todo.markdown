@@ -22,3 +22,6 @@ Xcode build settings相关设置，编译链接相关
 iOS内存泄漏：UIAlertView，UIImagePickerController，UIWebView
 
 C CPP结构体初始化
+
+iOS循环引用
+vc不走dealloc
