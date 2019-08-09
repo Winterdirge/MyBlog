@@ -25,3 +25,5 @@ C CPP结构体初始化
 
 iOS循环引用
 vc不走dealloc
+
+storyboard添加GLKView之后连接xcode run 不会crash，断开后运行会crash
