@@ -4,6 +4,7 @@ title:      Metal探索之旅（一）
 subtitle:   使用Metal进行并行计算
 date:       2019-08-09 20:01:55 GMT+8
 author:     "Yang Guang"
+catalog:    true
 header-style: text
 tags:
     - iOS
@@ -92,7 +93,7 @@ id<MTLDevice> device = MTLCreateSystemDefaultDevice();
 
 `Metal`将其他与GPU相关的实体（编译过的着色器、内存缓冲和纹理）表示为对象，要创建这些特定的GPU对象，可以在`MTLDevice`上直接调用方法，或者在`MTLDevice`创建的对象上调用方法。 由设备对象直接或间接创建的所有对象仅可用于该设备对象。 使用多个GPU的应用程序将使用多个设备对象，并为每个设备创建类似的Metal对象层次结构。
 
-## Get a Reference to the Metal Function
+### Get a Reference to the Metal Function
 
 想要在GPU上执行方法，所做的第一件事是加载该方法，告诉GPU这个方法在哪里。 
 
@@ -118,7 +119,7 @@ if (addFunction == nil)
 
 ```
 
-## Prepare a Metal Pipeline
+### Prepare a Metal Pipeline
 
 函数对象是MSL函数的代理，但它不是可执行代码。
 
@@ -144,7 +145,7 @@ if (mAddFunctionPSO == nil)
 >注意：
 到目前为止我们的代码中返回的对象都是作为符合相关协议的对象返回。Metal使用协议来定义大多数GPU相关对象，以抽象掉底层的具体实现，这些类的实现可能因不同的GPU而异。Metal使用类定义与GPU无关的对象，任何给定的Metal协议的参考文档都清楚地表明我们是否可以在应用程序中实现该协议，所以不会的时候要看看文档。
 
-## Create a Command Queue
+### Create a Command Queue
 
 要将工作发送到GPU，我们需要一个命令队列，Metal使用命令队列来安排命令。
 
@@ -152,7 +153,7 @@ if (mAddFunctionPSO == nil)
 id<MTLCommandQueue> mCommandQueue = [device newCommandQueue];
 ```
 
-## Create Data Buffers and Load Data
+#### Create Data Buffers and Load Data
 
 完成基本Metal对象初始化之后，需要加载GPU执行的数据。
 
@@ -190,7 +191,7 @@ id<MTLBuffer> mBufferResult = [device newBufferWithLength:bufferSize options:MTL
 }
 ```
 
-## Create a Command Buffer
+#### Create a Command Buffer
 
 使用命令队列创建命令缓冲
 
@@ -198,7 +199,7 @@ id<MTLBuffer> mBufferResult = [device newBufferWithLength:bufferSize options:MTL
 id<MTLCommandBuffer> commandBuffer = [mCommandQueue commandBuffer];
 ```
 
-## Create a Command Encoder
+#### Create a Command Encoder
 
 想要将命令写入命令缓冲区，需要使用命令编码器来编码需要执行的命令。该例子创建一个计算命令编码器，用于编码计算过程。一个计算过程包含执行计算管道的命令列表，每个计算命令都会使GPU创建一个在GPU上执行的线程网格。
 
@@ -210,7 +211,7 @@ id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncod
 
 ![](/assets/images/2019/learn_metal_01.png)
 
-## Set Pipeline State and Argument Data
+#### Set Pipeline State and Argument Data
 
 设置要执行命令的管道的管道状态对象，然后为管道需要发送到`add_arrays`的每一个参数设置数据。例子中的管道需要提供对三个缓冲区的引用，Metal按照参数在`add_arrays`函数声明中出现的顺序自动分配缓冲区参数的索引，从0开始。
 
@@ -223,7 +224,7 @@ id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncod
 
 你也可以为每个参数指定一个偏移量，偏移量为0表示命令将会从buffer的开始地址读取数据。然而，你可以使用一个buffer存储多个参数，然后为每个参数设置偏移量。我们没有为index参数指定任何数据，因为`add_arrays`函数将其值定义为由GPU提供。
 
-## Specify Thread Count and Organization
+#### Specify Thread Count and Organization
 
 接下来，确定要创建的线程数以及如何组织这些线程。Metal可以创建1D，2D或3D网格，`add_arrays`函数使用1D数组，因此示例创建一个大小为1D的网格（dataSize x 1 x 1），Metal从该网格生成0到dataSize-1之间的索引。
 
@@ -231,7 +232,7 @@ id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncod
 MTLSize gridSize = MTLSizeMake(arrayLength, 1, 1);
 ```
 
-## Specify Threadgroup Size
+#### Specify Threadgroup Size
 
 Metal将网格细分为一种叫做线程组的较小网格，每个线程组都是单独计算的，Metal可以将线程组分派到GPU上的不同处理单元，以加快处理速度。
 
@@ -246,7 +247,7 @@ MTLSize threadgroupSize = MTLSizeMake(threadGroupSize, 1, 1);
 
 应用程序向管道状态对象请求最大可能的线程组，并在该大小大于数据集大小时减小它，`maxTotalThreadsPerThreadgroup`属性给出了线程组中允许的最大线程数，这取决于用于创建管道状态对象的函数的复杂性。
 
-## Encode the Compute Command to Execute the Threads
+#### Encode the Compute Command to Execute the Threads
 
 最后，编码命令然后分发给线程网格。
 
@@ -258,7 +259,7 @@ MTLSize threadgroupSize = MTLSizeMake(threadGroupSize, 1, 1);
 
 您可以采用相同的步骤使用编码器将多个计算命令编码到计算过程中，而不需要执行任何冗余步骤。例如，可以设置一次管道状态对象，然后为要处理的每个缓冲区集合设置参数并编码命令。
 
-## End the Compute Pass
+#### End the Compute Pass
 
 如果没有其他命令要添加到计算过程，则结束编码过程。
 
@@ -266,7 +267,7 @@ MTLSize threadgroupSize = MTLSizeMake(threadGroupSize, 1, 1);
 [computeEncoder endEncoding];
 ```
 
-## Commit the Command Buffer to Execute Its Commands
+#### Commit the Command Buffer to Execute Its Commands
 
 通过将命令缓冲区提交到队列来运行命令缓冲区中的命令。
 
