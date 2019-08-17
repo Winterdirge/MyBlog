@@ -224,3 +224,103 @@ id<MTLComputeCommandEncoder> computeEncoder = [commandBuffer computeCommandEncod
 你也可以为每个参数指定一个偏移量，偏移量为0表示命令将会从buffer的开始地址读取数据。然而，你可以使用一个buffer存储多个参数，然后为每个参数设置偏移量。我们没有为index参数指定任何数据，因为`add_arrays`函数将其值定义为由GPU提供。
 
 ## Specify Thread Count and Organization
+
+接下来，确定要创建的线程数以及如何组织这些线程。Metal可以创建1D，2D或3D网格，`add_arrays`函数使用1D数组，因此示例创建一个大小为1D的网格（dataSize x 1 x 1），Metal从该网格生成0到dataSize-1之间的索引。
+
+```objc
+MTLSize gridSize = MTLSizeMake(arrayLength, 1, 1);
+```
+
+## Specify Threadgroup Size
+
+Metal将网格细分为一种叫做线程组的较小网格，每个线程组都是单独计算的，Metal可以将线程组分派到GPU上的不同处理单元，以加快处理速度。
+
+```objc
+NSUInteger threadGroupSize = mAddFunctionPSO.maxTotalThreadsPerThreadgroup;
+if (threadGroupSize > arrayLength)
+{
+    threadGroupSize = arrayLength;
+}
+MTLSize threadgroupSize = MTLSizeMake(threadGroupSize, 1, 1);
+```
+
+应用程序向管道状态对象请求最大可能的线程组，并在该大小大于数据集大小时减小它，`maxTotalThreadsPerThreadgroup`属性给出了线程组中允许的最大线程数，这取决于用于创建管道状态对象的函数的复杂性。
+
+## Encode the Compute Command to Execute the Threads
+
+最后，编码命令然后分发给线程网格。
+
+```objc
+[computeEncoder dispatchThreads:gridSize threadsPerThreadgroup:threadgroupSize];
+```
+
+当GPU执行此命令时，它使用您先前设置的状态和命令参数来分派线程以执行计算。
+
+您可以采用相同的步骤使用编码器将多个计算命令编码到计算过程中，而不需要执行任何冗余步骤。例如，可以设置一次管道状态对象，然后为要处理的每个缓冲区集合设置参数并编码命令。
+
+## End the Compute Pass
+
+如果没有其他命令要添加到计算过程，则结束编码过程。
+
+```objc
+[computeEncoder endEncoding];
+```
+
+## Commit the Command Buffer to Execute Its Commands
+
+通过将命令缓冲区提交到队列来运行命令缓冲区中的命令。
+
+```objc
+[commandBuffer commit];
+```
+
+命令队列创建了命令缓冲区，因此提交的缓冲区始终在该队列上。提交命令缓冲区后，Metal准备异步执行命令，GPU执行命令缓冲区中的所有命令后，Metal将命令缓冲区标记为完成。
+
+## Wait for the Calculation to Complete
+
+当GPU处理您的命令时，您的应用程序可以执行其他工作。 该例子不需要执行任何其他工作，因此只需等待命令缓冲区完成。
+
+```objc
+[commandBuffer waitUntilCompleted];
+```
+
+或者，等到Metal处理完所有命令时发送通知，也可以使用`addCompletedHandler（_ :)`，或通过读取其status属性来检查命令缓冲区的状态。
+
+## Read the Results From the Buffer
+
+命令缓冲区完成后，GPU将计算结果存储在输出缓冲区中，并且Metal会执行必要的步骤以确保CPU可以看到它们。在真实的应用程序中，我们会从缓冲区读取结果并对其执行某些操作，例如在屏幕上显示结果或将其写入文件。该例子仅仅会读取存储在输出缓冲区中的值，并进行测试以确保CPU和GPU计算出相同的结果。
+
+```objc
+- (void) verifyResults
+{
+    float* a = _mBufferA.contents;
+    float* b = _mBufferB.contents;
+    float* result = _mBufferResult.contents;
+
+    for (unsigned long index = 0; index < arrayLength; index++)
+    {
+        assert(result[index] == a[index] + b[index]);
+    }
+}
+```
+
+# 总结
+
+本文主要介绍了在GPU上执行计算的基本步骤，以及GPU相关的一些对象。总的来说使用GPU计算需要以下步骤：
+
+1. 写MSL Shader，文件需要以`.metal`为后缀
+2. 获取可用GPU`MTLCreateSystemDefaultDevice()`
+3. 获取编译shader后的library`newDefaultLibrary`
+4. 在library中找到该方法`[defaultLibrary newFunctionWithName:@"add_arrays"]`
+5. 创建PSO对象`[device newComputePipelineStateWithFunction:addFunction error:&error]`，该对象会对上一步中获得的方法进行编译
+6. 创建命令队列`[device newCommandQueue]`
+    * 通过该队列常见命令缓冲区`[mCommandQueue commandBuffer]`
+    * 通过命令缓冲区创建命令编码器`[commandBuffer computeCommandEncoder]`
+    * 使用编码器编码命令
+        1. 设置PSO `[computeEncoder setComputePipelineState:_mAddFunctionPSO]`
+        2. 设置输入输出buffer数据
+            * 需要创建输入输出的buffer并指定它们的共享模式
+        3. 设置线程数，以及threadgroup size
+        4. 完成编码`[computeEncoder endEncoding]`
+7. 提交命令缓冲进行执行`[commandBuffer commit]`
+8. 获取执行结果
