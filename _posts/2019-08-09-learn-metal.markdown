@@ -55,7 +55,7 @@ Xcode构建Metal文件时会创建一个默认的Metal库，并将其嵌入到�
 
 改写后的MSL代码如下：
 
-```C++
+```C
 #include <metal_stdlib>
 using namespace metal;
 /// This is a Metal Shading Language (MSL) function equivalent to the add_arrays() C function, used to perform the calculation on a GPU.
