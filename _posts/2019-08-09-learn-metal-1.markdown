@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      Metal探索之旅（一）
+title:      Metal探索之旅(一)
 subtitle:   使用Metal进行并行计算
 date:       2019-08-09 20:01:55 GMT+8
 author:     "Yang Guang"
