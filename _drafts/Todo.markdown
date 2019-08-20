@@ -31,3 +31,5 @@ storyboard添加GLKView之后连接xcode run 不会crash，断开后运行会cra
 image相关的各种view以及绘制时的context用法
 
 Metal计算以及渲染
+
+CVPixelBuffer->CIImage->UIImage 存不到相册？
