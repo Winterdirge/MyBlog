@@ -33,3 +33,8 @@ image相关的各种view以及绘制时的context用法
 Metal计算以及渲染
 
 CVPixelBuffer->CIImage->UIImage 存不到相册？
+
+iOS stackview 隐藏时和collection reloaddata冲突？
+调用layoutIfNeeded即可解决
+
+layoutIfNeeded, setNeedsDisplay, layoutSubviews区别
