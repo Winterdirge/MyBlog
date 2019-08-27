@@ -161,3 +161,96 @@ fragment float4 fragmentShader(RasterizerData in [[stage_in]])
 光栅化阶段计算每个片段的参数值，然后通过这些值调用片段着色器。光栅化阶段通过混合三角形顶点的颜色来计算每个片段的颜色，片段距离顶点越近，该顶点颜色所占的比重越大。
 
 ![](/assets/images/2019/learn_metal_05.png)
+
+最后返回插值后的颜色作为输出
+
+```cpp
+return in.color;
+```
+
+# 创建PSO
+
+目前为止，顶点片段着色器已完成，需要创建渲染管线来使用它们，这个过程前面几篇文章已经介绍，这里不再赘述。
+
+```objectivec
+id<MTLLibrary> defaultLibrary = [_device newDefaultLibrary];
+
+id<MTLFunction> vertexFunction = [defaultLibrary newFunctionWithName:@"vertexShader"];
+id<MTLFunction> fragmentFunction = [defaultLibrary newFunctionWithName:@"fragmentShader"];
+```
+
+下一步，需要创建`MTLRenderPipelineState`对象，与之前不同的是，我们需要创建`MTLRenderPipelineDescriptor`来配置渲染管线。
+
+```objectivec
+MTLRenderPipelineDescriptor *pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
+pipelineStateDescriptor.label = @"Simple Pipeline";
+pipelineStateDescriptor.vertexFunction = vertexFunction;
+pipelineStateDescriptor.fragmentFunction = fragmentFunction;
+pipelineStateDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat;
+
+_pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor 
+                                                         error:&error];
+```
+
+除了要指定顶点和片段着色函数之外，我们还需要指定渲染管线绘制的渲染目标的像素格式。`MTLPixelFormat`定义了像素的内存布局，包括每个像素的字节数，像素中数据的通道数，以及这些通道的位布局。本文中的例子只有一个渲染目标，所以简单的拷贝视图的像素格式到渲染管线描述对象即可。同时，渲染管线对象使用的像素格式必须与`render pass`指定的相同，本文中都使用视图的像素格式，所以它们总是相同的。
+
+当Metal创建渲染管线状态对象时，渲染管线会将片段着色器的输出转换为渲染目标的像素格式，如果你想要指定一个不同的像素格式，就需要创建不同的管道状态对象，你可以在针对不同像素格式的多个管道中重复使用相同的着色器。
+
+# 设置视图窗口大小
+
+现在，我们已经有了渲染管线状态对象，已经可以渲染三角形了。我们需要做的就是使用渲染命令编码器，设置viewport，这样Metal才知道你想要在渲染目标的哪一部分绘制。
+
+```objectivec
+// Set the region of the drawable to draw into.
+[renderEncoder setViewport:(MTLViewport){0.0, 0.0, _viewportSize.x, _viewportSize.y, 0.0, 1.0}];
+```
+
+# 设置管线状态
+
+不多说，必须的一步，Metal里就是这么规定的
+
+```objectivec
+[renderEncoder setRenderPipelineState:_pipelineState];
+```
+
+# 发送参数到顶点函数
+
+通常我们使用`MTLBuffer`来传送数据到着色器，然而当数据量很小的时候我们可以把数据直接拷贝到命令缓冲区。本文使用的就是直接拷贝，由于片段着色器使用的是光栅化输出值，因此不需要设置它的参数。
+
+```objectivec
+[renderEncoder setVertexBytes:triangleVertices 
+                       length:sizeof(triangleVertices) 
+                      atIndex:AAPLVertexInputIndexVertices];
+
+[renderEncoder setVertexByte:&_viewportSize
+                      length:sizeof(_viewportSize)
+                     atIndex:AAPLVertexInputIndexViewportSize];
+
+```
+
+# 编码绘制命令
+
+指定绘制的图元，开始索引和顶点数，当三角形绘制时，顶点着色器函数的vertexID参数，会分别以0，1，2进行调用。
+
+```objectivec
+//draw the triangle.
+[renderEncoder drawPrimitives:MTLPrimitiveTypeTriangle
+                  vertexStart:0
+                  vertexCount:3];
+```
+
+我们可以使用相同的步骤编码更多的渲染命令，最终的图像看起来就好像是按照指定的顺序渲染的一样。（为了提高性能，GPU允许并行执行部分命令，只要最终结果看起来是按顺序呈现的即可）
+
+# 体验颜色插值
+
+本文中，颜色值在三角形中进行插值，这通常是我们想要的，但是有时候我们想要一个顶点生成一个值，并在整个图元时保持不变。这时候就需要另一个属性限定符`flat`，找到RasterizerData的定义，将`[[flat]]`限定符添加到它的颜色字段。
+
+```cpp
+float4 color [[flat]];
+```
+
+然后我们就会发现，渲染管线在三角形上均匀的使用第一个顶点(成为激发顶点)的颜色值，忽略另外连个顶点的颜色。我们可以使用平面着色和插值混合，只需要通过添加或省略flat限定符即可。[The Metal Shading Language](https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf)也定义了可以修改光栅化行为的其他属性限定符。
+
+有兴趣的朋友可自行研究。
+
+### TO BE CONTINUED
