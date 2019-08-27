@@ -47,4 +47,38 @@ tags:
 * 顶点处理阶段的输出，该输出会用于光栅化阶段
 * 片段处理阶段的输入，又你的app提供，或者由光栅化阶段生成
 
-本文中输入数据为顶点位置和颜色信息，
+本文中输入数据为顶点位置和颜色信息，为了表示我们在顶点着色器中对顶点进行了哪些转换，输入坐标将使用自定义的坐标空间，以像素为单位，从视图的中间开始计算。但是，这些坐标需要转化到Metal的坐标系统。
+
+首先定义顶点数据结构
+
+```c
+typdef struct {
+    vector_float2 position;
+    vector_float4 color;
+} AAPLVertex;
+```
+
+至于`vector_float2`和`vector_float4`代表什么，可以参考`simd library`。
+
+初始化三角形的三个顶点信息
+
+```c
+static const AAPLVertex triangleVertices[] = 
+{
+    //2D positions,        RGBA colors
+    { {  250, -250 },     { 1, 0, 0, 1 } },
+    { { -250, -250 },     { 0, 1, 0, 1 } },
+    { {    0,  250 },     { 0, 0, 1, 1 } },
+};
+```
+
+顶点着色器为每一个顶点生成需要数据，所以它需要提供颜色和转换后的位置信息。我们将其定义如下
+
+```c
+typdef struct {
+    float4 position [[position]];
+    float4 color;
+} RasterizerData;
+```
+
+其中，`[[position]]`关键字表示当该结构作为结果返回时，该字段是顶点的位置信息。
