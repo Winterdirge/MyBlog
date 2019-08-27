@@ -81,4 +81,62 @@ typdef struct {
 } RasterizerData;
 ```
 
-其中，`[[position]]`关键字表示当该结构作为结果返回时，该字段是顶点的位置信息。
+其中，`[[position]]`关键字表示当该结构作为结果返回时，该字段是顶点的位置信息，并且它必须被定义为`vector_float4`，你需要告诉需要光栅化的数据中哪一部分是顶点位置信息，由于Metal没有对字段的命名进行约定，所以这里就需要使用属性限定符来声明该字段是顶点数据的输出位置。
+
+# 顶点着色器
+
+先来看一下顶点着色器的声明
+
+```cpp
+vertex RasterizerData vertexShader(
+    uint vertexID [[vertex_id]],
+    constant AAPLVertex *vertices [[buffer(AAPLVertexInputIndexVertices)]],
+    constant vertor_uint2 *viewportSizePointer [[buffer(AAPLVertexInputIndexViewportSize)]]    
+);
+```
+
+第一个参数`vertexID`，使用`[[vertex_id]]`限定符。当执行渲染命令时，GPU会多次调用顶点着色器，为每个顶点产生唯一值。
+
+第二个参数`vertices`，是一个包含顶点数据的数组，使用前面定义的`AAPLVertex`结构体。
+
+为了将顶点位置转化到Metal坐标系，我们需要知道绘制三角形的viewport的大小，这个数值存储在viewportSizePointer中。
+
+后两个参数具有`[[buffer(n)]]`限定符，在默认情况下Metal会为参数列表中的每个参数分配默认的位置(slots)。但是当我们添加`[[buffer(n)]]`限定符时，就相当于指定了参数位置，Metal将使用我们指定的位置。这种做法有一个好处，当我们修改shader时，无需在修改应用程序代码。
+
+## 编写顶点着色器
+
+我们的顶点着色器必须生成输出结构中的两部分数据，使用`vertexID`参数从vertices数组中获取输入的顶点信息，同时需要获取viewport尺寸信息。
+
+```cpp
+float2 pixelSpacePosition = vertices[vertexID].position.xy;
+
+// Get the viewport size and cast to float.
+vector_float2 viewportSize = vector_float2(*viewportSizePointer);
+```
+
+顶点着色器必须提供顶点在裁剪坐标中的位置信息，这些位置信息是使用四维齐次矢量`(x, y, z, w)`指定的3D点。光栅化阶段将会使用x、y、z除以w，在标准化设备空间中生成3D点，标准化设备坐标与视口大小无关。
+
+![](/assets/images/2019/learn_metal_02.png)
+
+标准化设备空间使用左手坐标系将位置映射到viewport中，在这个坐标系下图元会被裁剪到[-1, 1]范围中，然后被光栅化。剪切框的左下角位于[-1, 1]，右上角位于[1, 1]，正z方向远离相机(进入屏幕方向)。z方向上的可见部分位于近裁剪平面和远裁剪平面之间。
+
+![](/assets/images/2019/learn_metal_03.png)
+
+上图给出了输入坐标到标准设备坐标之间的转换
+
+由于我们要绘制的是一个2D三角形，因此不需要齐次坐标系，将w坐标值设置为1，其他都设置为0。这样我们的坐标就已经在标准化的坐标空间中了，顶点着色器只需要生成x，y坐标即可，将输入坐标除以viewport的一半就可以生成标准设备坐标。
+
+```cpp
+out.position = vector_float4(0.0, 0.0, 0.0, 1.0);
+out.position.xy = pixelSpacePosition / (viewportSize / 2.0);
+```
+
+对于顶点颜色来说，我们只需要直接赋值即可
+
+```cpp
+out.color = vertices[vertexID].color;
+```
+
+至此，顶点着色器告一段落，下面来看一下片段着色器。
+
+# 编写片段着色器
