@@ -38,3 +38,5 @@ iOS stackview 隐藏时和collection reloaddata冲突？
 调用layoutIfNeeded即可解决
 
 layoutIfNeeded, setNeedsDisplay, layoutSubviews区别
+
+OpenGLES 3.0语法在iOS编译有问题？
